@@ -2,8 +2,9 @@
 Lame attempt at learning Solana Developing. Probably doesn't work.
 
 
-REWLYBz1rZFS2ErKB5LEdXTYChUXBAvF2zjbizsAsjM.json = Devnet reward token (deployed)
-test_staking.json = keypair I used to deploy the program to devnet 
+`REWLYBz1rZFS2ErKB5LEdXTYChUXBAvF2zjbizsAsjM.json` = Devnet reward token (deployed)
+
+`test_staking.json` = keypair I used to deploy the program to devnet 
 
 My `solana config get` looks like this:
 ```
