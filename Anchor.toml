@@ -1,0 +1,15 @@
+[features]
+seeds = true
+
+[programs.devnet]
+staking_program = "7qwQBAxGr9c5STpZeQRDYWsYXLNRjDfrFdZ4q3vkD6Fj"
+
+[registry]
+url = "https://api.apr.dev"
+
+[provider]
+cluster = "devnet"
+wallet = "./test_staking.json"
+
+[scripts]
+test = "yarn run ts-mocha -t 1000000 tests/**/*.ts"
