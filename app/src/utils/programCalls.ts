@@ -2,7 +2,7 @@ import * as anchor from "@project-serum/anchor"
 import { PublicKey, Connection, SystemProgram }/*,KeyPair}*/ from "@solana/web3.js"
 import { Buffer } from "buffer"
 import { wallet } from "@/utils/solanaWallet"
-// import { Metaplex, keypairIdentity, bundlrStorage } from "@metaplex-foundation/js";
+
 import { PROGRAM_ID as METADATA_PROGRAM_ID } from "@metaplex-foundation/mpl-token-metadata"
 import {
   TOKEN_PROGRAM_ID,
@@ -50,19 +50,22 @@ let stakeStatePda: any[], delegatedAuthPda: any[], NFT_MINT: PublicKey, tokenAdd
 async function getAddresses(nft: any) {
   NFT_MINT = new PublicKey(nft.mint)
   tokenAddress = await findAssociatedTokenAddress(wallet.publicKey.value!, NFT_MINT);
-  masterEdition = (await PublicKey.findProgramAddress([Buffer.from('metadata'), METADATA_PROGRAM_ID.toBuffer(), NFT_MINT.toBuffer(), Buffer.from('edition')], programId))[0]
+  masterEdition = nft.masterEditionAddress
+  if (!masterEdition) {
+    masterEdition = (await PublicKey.createProgramAddress([Buffer.from('metadata'), METADATA_PROGRAM_ID.toBuffer(), NFT_MINT.toBuffer(), Buffer.from('edition')], programId))
+  }
   delegatedAuthPda = await PublicKey.findProgramAddress(
     [Buffer.from("authority")],
     programId
   )
-  
+
   stakeStatePda = await PublicKey.findProgramAddress(
     [wallet.publicKey.value!.toBuffer(), tokenAddress.toBuffer()],
     programId
   )
   return
 }
-export async function stakeNFT(nft: any) {
+export async function stakeNFT(nft: any, user: PublicKey) {
   try {
     console.log(" user:", wallet.publicKey.value!.toBase58())
     await getAddresses(nft)
@@ -71,11 +74,12 @@ export async function stakeNFT(nft: any) {
     console.log("stake state pda: ", stakeStatePda[0].toBase58())
     console.log("token address:", tokenAddress.toBase58())
     console.log("NFT_MINT:", NFT_MINT.toBase58())
-    const userWallet = wallet.publicKey.value!
+    console.log("master edition:", masterEdition.toBase58())
+    // const userWallet = wallet.publicKey.value!
     const txid = await program.methods
       .stake()
       .accounts({
-        user: userWallet,
+        user: user,
         nftTokenAccount: tokenAddress,
         nftMint: NFT_MINT,
         nftEdition: masterEdition,

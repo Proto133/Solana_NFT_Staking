@@ -1,5 +1,15 @@
 const { defineConfig } = require('@vue/cli-service')
+const secret = require('../test_staking.json')
+const { Keypair } = require('@solana/web3.js')
 module.exports = defineConfig({
+
+  chainWebpack: config => {
+    config.plugin('define').tap(args => {
+      args[0]['process.env'].SECRET = Keypair.fromSecretKey(Uint8Array.from(secret));
+      return args;
+    });
+  },
+
   configureWebpack: {
     resolve: {
       fallback: {

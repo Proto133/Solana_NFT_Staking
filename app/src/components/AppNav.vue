@@ -8,7 +8,6 @@ import { wallet } from '@/utils/solanaWallet'
 
 
 
-
 // const verified = ref(false)
 const $q = useQuasar();
 

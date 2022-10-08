@@ -100,7 +100,7 @@ export async function verifyNFT(pubkey: web3.PublicKey) {
         const ownedNFTs: NFT_META[] = []
         nftArray.forEach(async (nft: NFT_META) => {
 
-
+            console.dir(nft)
             nft = await getNFTInfo(nft)
             console.log({ nft })
             ownedNFTs.push({ ...nft, creator_id: nft.data.creators[0]?.address })

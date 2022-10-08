@@ -13,7 +13,7 @@ import { stakeNFT } from '@/utils/programCalls';
 const userNFTs: ComputedRef<State["user"]["tokens"]> = computed(() => store.state.user.tokens)
 
 async function handleStakeNFT(nft: any) {
-  await stakeNFT(nft)
+  await stakeNFT(nft, wallet.publicKey.value)
 }
 async function handleRedeem(nft: any) {
 
@@ -30,7 +30,7 @@ watchEffect(async () => {
   if (!userNFTs.value.length && wallet.publicKey.value) {
     await verifyNFT(wallet.publicKey.value!)
   }
-  if (!wallet.connected.value){
+  if (!wallet.connected.value) {
     store.dispatch('logout')
   }
 })
