@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import AppNav from '@/components/AppNav.vue'
-// import { ref, watchEffect, Ref } from 'vue'
+// import { mint } from '@/utils/mintNewNFT'
+// import { ref } from 'vue'
 
 </script>
 <template>
   <q-layout view="lHh Lpr lFf">
     <AppNav />
-
     <RouterView />
+
   </q-layout>
 </template>
 <style scoped>

@@ -5,7 +5,8 @@ import { NFT_META } from '@/utils/verifyNFT'
 type Creator =
   { address: string }
 type User = {
-  tokens: NFT_META[]
+  tokens: NFT_META[];
+  verifiedWallet: boolean;
 }
 export interface State {
   user: User
@@ -15,6 +16,7 @@ export default createStore({
   state: {
     user: {
       tokens: <any>[],
+      verifiedWallet: false,
     }
   },
   getters: {
@@ -22,6 +24,9 @@ export default createStore({
   mutations: {
   },
   actions: {
+    setVerifiedWallet(context, status){
+      context.state.user.verifiedWallet = status;
+    },
     updateNFTMeta(context, nfts) {
       if (nfts.length === 0) {
         context.state.user.tokens = []

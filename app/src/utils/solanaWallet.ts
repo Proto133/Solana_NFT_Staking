@@ -5,6 +5,7 @@ import {
     SlopeWalletAdapter,
     // SolflareWalletAdapter,
 } from '@solana/wallet-adapter-wallets';
+// import { Keypair } from '@solana/web3.js';
 
 const wallets = [
     new PhantomWalletAdapter(),

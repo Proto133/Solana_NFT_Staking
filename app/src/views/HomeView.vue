@@ -1,19 +1,35 @@
     
 <script setup lang="ts">
-import { ComputedRef, watchEffect, computed } from 'vue'
+import { ComputedRef, watchEffect, computed, ref } from 'vue'
 // import AppNav from '@/components/AppNav.vue'
 import store, { State } from '@/store'
 import { wallet } from '@/utils/solanaWallet';
-import { verifyNFT } from '@/utils/verifyNFT';
+import { verifyNFT, verifyWallet } from '@/utils/verifyNFT';
 import { stakeNFT } from '@/utils/programCalls';
-// import { PublicKey } from '@solana/web3.js';
+import { useQuasar } from 'quasar'
 
-// import { testStakeProgram, testUnstakeNFT, testRedeemRewards } from '@/utils/anchor-program'
+const $q = useQuasar()
+const walletVerified = ref(false)
 
+async function handleVerifyWallet() {
+  const walletStatus = await verifyWallet();
+  if (!walletStatus) {
+    $q.notify({
+      type: 'negative',
+      icon: 'warning',
+      message: 'Oh No!',
+      caption: 'Wallet not verified',
+      position: 'top'
+
+    })
+  }
+
+  return walletVerified.value = walletStatus
+}
 const userNFTs: ComputedRef<State["user"]["tokens"]> = computed(() => store.state.user.tokens)
 
 async function handleStakeNFT(nft: any) {
-  await stakeNFT(nft, wallet.publicKey.value)
+  await stakeNFT(nft, wallet.publicKey.value!)
 }
 async function handleRedeem(nft: any) {
 
@@ -38,13 +54,17 @@ watchEffect(async () => {
 <template>
   <q-page-container>
     <h2>{{wallet.publicKey.value?.toBase58()}}</h2>
-    <div v-if="userNFTs" class="flex justify-between">
-      <q-card v-for="nft in userNFTs" :key="nft.mint">
-        <q-img class="nft" :src="nft.image" />
-        <q-btn label="Stake" @click="handleStakeNFT(nft)"></q-btn>
-        <q-btn label="Redeem" @click="handleRedeem(nft)"></q-btn>
-        <q-btn label="Unstake" @click="handleUnstake(nft)"></q-btn>
-      </q-card>
-    </div>
+
+    <section id="nfts" v-if="walletVerified">
+      <div v-if="userNFTs" class="flex justify-between">
+        <q-card v-for="nft in userNFTs" :key="nft.mint">
+          <q-img class="nft" :src="nft.image" />
+          <q-btn label="Stake" @click="handleStakeNFT(nft)"></q-btn>
+          <q-btn label="Redeem" @click="handleRedeem(nft)"></q-btn>
+          <q-btn label="Unstake" @click="handleUnstake(nft)"></q-btn>
+        </q-card>
+      </div>
+    </section>
+    <q-btn v-else label="Verify Wallet" flat @click="handleVerifyWallet()" />
   </q-page-container>
 </template>
